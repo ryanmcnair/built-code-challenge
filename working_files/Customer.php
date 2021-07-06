@@ -113,4 +113,54 @@ class Customer
 
         return $result;
     }
+    
+    public function htmlStatement()
+    {
+        $totalAmount = 0;
+
+        $result = '<h1>Rental Record for <em>' . $this->name() . '</em></h1>' . PHP_EOL;
+
+        $result .= '<ul>' . PHP_EOL;
+        foreach ($this->rentals as $rental) {
+            // setting the amount for each rental in the array
+            $thisAmount = 0;
+                       
+            // calculating the price based on the priceCode passed in: REGULAR, NEW_RELEASE OR CHILDRENS
+            switch($rental->movie()->priceCode()) {
+                case Movie::REGULAR:
+                    // REGULAR rental is 2 for a 2 days
+                    $thisAmount += 2;
+                    // if the rental is more than 2 days, we add 1.5 to the amount daily
+                    if ($rental->daysRented() > 2) {
+                        $thisAmount += ($rental->daysRented() - 2) * 1.5;
+                    }
+                    break;
+                case Movie::NEW_RELEASE:
+                    // NEW_RELEASE movies are 3 daily
+                    $thisAmount += $rental->daysRented() * 3;
+                    break;
+                case Movie::CHILDRENS:
+                    // CHILDRENS rental is 1.5 for 3 days
+                    $thisAmount += 1.5;
+                    // if the rental is more than 3 days, we add 1.5 to the amount daily
+                    if ($rental->daysRented() > 3) {
+                        $thisAmount += ($rental->daysRented() - 3) * 1.5;
+                    }
+                    break;
+            }
+
+            // add the amount for each rental in the array to the total amount
+            $totalAmount += $thisAmount;
+
+            // prints movie name and the amount for each rental
+            $result .= '    <li>' . str_pad($rental->movie()->name(), 30, ' ', STR_PAD_RIGHT) . ' - ' . $thisAmount . '</li>' . PHP_EOL;
+        }
+        $result .= '</ul>' . PHP_EOL;
+        // prints the amount for the total sale
+        $result .= '<p>Amount owed is <em>' . $totalAmount . '</em></p>' . PHP_EOL;
+        // prints the points amount for the sale
+        $result .= '<p>You earned <em>' . $this->getRenterPoints() . '</em> frequent renter points</p>' . PHP_EOL;
+
+        return $result;
+    }
 }
