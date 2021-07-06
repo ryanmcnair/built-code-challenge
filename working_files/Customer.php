@@ -42,6 +42,22 @@ class Customer
         $this->rentals[] = $rental;
     }
 
+    public function getRenterPoints()
+    {
+        $frequentRenterPoints = 0;
+
+        foreach ($this->rentals as $rental)
+        {
+            // adding points to the frequentRenterPoints variable
+            $frequentRenterPoints++;
+            // if a movie is rented for more than one day a point is earned and if the movie is a NEW_RELEASE a point is earned. 2 points for NEW_RELEASE's
+            if ($rental->movie()->priceCode() === Movie::NEW_RELEASE && $rental->daysRented() > 1) {
+                $frequentRenterPoints++;
+            }
+        }
+        return $frequentRenterPoints;
+    }
+
     // function that prints the text statement - move this to it's own file and break down totalAmount & frequentRenterPoints into separate functions
     /**
      * @return string
@@ -50,7 +66,6 @@ class Customer
     {
         // declaring the beginning of the transaction
         $totalAmount = 0;
-        $frequentRenterPoints = 0;
 
         // header for the statement
         $result = 'Rental Record for ' . $this->name() . PHP_EOL;
@@ -87,13 +102,6 @@ class Customer
             // add the amount for each rental in the array to the total amount
             $totalAmount += $thisAmount;
 
-            // adding points to the frequentRenterPoints variable
-            $frequentRenterPoints++;
-            // if a movie is rented for more than one day a point is earned and if the movie is a NEW_RELEASE a point is earned. 2 points for NEW_RELEASE's
-            if ($rental->movie()->priceCode() === Movie::NEW_RELEASE && $rental->daysRented() > 1) {
-                $frequentRenterPoints++;
-            }
-
             // prints movie name and the amount for each rental
             $result .= "\t" . str_pad($rental->movie()->name(), 30, ' ', STR_PAD_RIGHT) . "\t" . $thisAmount . PHP_EOL;
         }
@@ -101,7 +109,7 @@ class Customer
         // prints the amount for the total sale
         $result .= 'Amount owed is ' . $totalAmount . PHP_EOL;
         // prints the points amount for the sale
-        $result .= 'You earned ' . $frequentRenterPoints . ' frequent renter points' . PHP_EOL;
+        $result .= 'You earned ' . $this->getRenterPoints() . ' frequent renter points' . PHP_EOL;
 
         return $result;
     }
