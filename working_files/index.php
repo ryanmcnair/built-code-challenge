@@ -1,28 +1,28 @@
 <?php
 
 require_once('Movie.php');
+require_once('ChildrensMovie.php');
+require_once('RegularMovie.php');
+require_once('NewReleaseMovie.php');
 require_once('Rental.php');
 require_once('Customer.php');
 
 $rental1 = new Rental(
-    new Movie(
-        'Back to the Future',
-        Movie::CHILDRENS
+    new ChildrensMovie(
+        'Back to the Future'
     ), 4
 );
 
 $rental2 = new Rental(
-    new Movie(
+    new RegularMovie(
         'Office Space',
-        Movie::REGULAR
-    ), 5
+    ), 3
 );
 
 $rental3 = new Rental(
-    new Movie(
+    new NewReleaseMovie(
         'The Big Lebowski',
-        Movie::NEW_RELEASE
-    ), 2
+    ), 5
 );
 
 $customer = new Customer('Joe Schmoe');
